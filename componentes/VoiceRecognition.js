@@ -33,10 +33,13 @@ const VoiceRecognition = ({ onTextRecognized = () => {} }) => {
     console.log('Evento onSpeechResults:', event);
     const { value } = event;
     if (value && value.length > 0) {
-      const text = value[0];
+      const text = value[0].toLowerCase(); // Convertir a minúsculas para comparaciones más simples
       setRecognizedText(text);
       if (typeof onTextRecognized === 'function') {
         onTextRecognized(text); // Llamar al callback prop
+      }
+      if (text.includes('hola')) {
+        Alert.alert('¡Palabra detectada!', 'Dijiste "hola"');
       }
     }
   };
