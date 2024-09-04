@@ -1,9 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, Alert, PermissionsAndroid, Platform } from 'react-native';
+import { View, Button, Alert, PermissionsAndroid, Platform, LogBox } from 'react-native';
 import Voice from '@react-native-voice/voice';
 
+// Ignorar las advertencias específicas de NativeEventEmitter
+LogBox.ignoreLogs([
+  'new NativeEventEmitter() was called with a non-null argument without the required addListener method.',
+  'new NativeEventEmitter() was called with a non-null argument without the required removeListeners method.'
+]);
+
+const personalityKeywords = {
+  ISTJ: [/metódico|metódica/, /minucioso|minuciosa/, /fiable/, /sistemático/, /concreto/, /ordenado/, /riguroso/, /puntual/],
+  ISFJ: [/atento/, /devoto/, /protector/, /generoso/, /conservador/, /amable/, /considerado/, /consciente/],
+  INFJ: [/idealista/, /altruista/, /profundo/, /enigmático/, /reflexivo/, /orientado a valores/, /sabio/, /perceptivo/],
+  INTJ: [/visionario/, /calculador/, /estratégico/, /analítico/, /decidido/, /ambicioso/, /innovador/, /estructurado/],
+  ISTP: [/ingenioso/, /pragmático/, /observador/, /adaptativo/, /resuelto/, /técnico/, /autónomo/, /práctico/],
+  ISFP: [/sensible/, /artístico/, /relajado/, /libre/, /adaptable/, /estético/, /apacible/, /intuitivo/],
+  INFP: [/soñador/, /introspectivo/, /idealista/, /empático/, /reflexivo/, /auténtico/],
+  INTP: [/analítico/, /inquisitivo/, /teórico/, /autónomo/, /crítico/, /mental/, /conceptual/, /independiente/],
+  ESTP: [/aventurero/, /audaz/, /pragmático/, /espontáneo/, /vivaz/, /directo/, /enérgico/, /entusiasta/],
+  ESFP: [/carismático/, /vibrante/, /sociable/, /adaptable/, /juguetón/, /alegre/, /entusiasta/, /expresivo/],
+  ENFP: [/inspirador/, /entusiasta/, /imaginativo/, /optimista/, /vivaz/, /espontáneo/, /comunicativo/, /creativo/],
+  ENTP: [/ingenioso/, /argumentativo/, /inquisitivo/, /explorador/, /adaptativo/, /provocador/, /estratégico/, /perspicaz/],
+  ESTJ: [/decisivo/, /pragmático/, /enfocado/, /responsable/, /metódico/, /directo/, /organizado/, /competente/],
+  ESFJ: [/empático/, /organizador/, /solidario/, /social/, /cooperativo/, /acogedor/, /tradicional/, /considerado/],
+  ENFJ: [/motivador/, /persuasivo/, /colaborador/, /inspirador/, /carismático/, /orientado a la gente/, /empático/, /guiador/],
+  ENTJ: [/decidido/, /ambicioso/, /directivo/, /estratégico/, /dominante/, /claro/, /metódico/, /eficiente/]
+};
+
 const VoiceRecognition = ({ onTextRecognized = () => {} }) => {
-  const [recognizedText, setRecognizedText] = useState('');
   const [isListening, setIsListening] = useState(false);
 
   useEffect(() => {
@@ -13,9 +37,9 @@ const VoiceRecognition = ({ onTextRecognized = () => {} }) => {
     Voice.onSpeechResults = onSpeechResults;
     Voice.onSpeechError = onSpeechError;
 
-    // Limpiar los listeners de eventos al desmontar
+    // Limpiar los listeners de eventos al desmontar el componente
     return () => {
-      Voice.destroy().then(Voice.removeAllListeners);
+      Voice.destroy().then(() => Voice.removeAllListeners());
     };
   }, []);
 
@@ -33,13 +57,21 @@ const VoiceRecognition = ({ onTextRecognized = () => {} }) => {
     console.log('Evento onSpeechResults:', event);
     const { value } = event;
     if (value && value.length > 0) {
-      const text = value[0].toLowerCase(); // Convertir a minúsculas para comparaciones más simples
-      setRecognizedText(text);
+      const text = value[0].toLowerCase().replace(/\s+/g, ' ').trim(); // Normalizar texto
+      console.log('Texto Reconocido:', text); // Mostrar texto en consola
       if (typeof onTextRecognized === 'function') {
         onTextRecognized(text); // Llamar al callback prop
       }
-      if (text.includes('hola')) {
-        Alert.alert('¡Palabra detectada!', 'Dijiste "hola"');
+
+      // Determinar el tipo de personalidad basado en las palabras clave
+      const detectedPersonalities = Object.keys(personalityKeywords).filter(personalityType => 
+        personalityKeywords[personalityType].some(pattern => pattern.test(text))
+      );
+
+      if (detectedPersonalities.length > 0) {
+        Alert.alert('Personalidad Detectada', `Tipo(s) de personalidad detectado(s): ${detectedPersonalities.join(', ')}`);
+      } else {
+        Alert.alert('No se detectó ningún tipo de personalidad');
       }
     }
   };
@@ -87,8 +119,6 @@ const VoiceRecognition = ({ onTextRecognized = () => {} }) => {
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: 18, marginBottom: 20 }}>Texto Reconocido:</Text>
-      <Text style={{ fontSize: 16, marginBottom: 20 }}>{recognizedText}</Text>
       <Button
         title={isListening ? 'Detener' : 'Iniciar'}
         onPress={isListening ? stopListening : startListening}
