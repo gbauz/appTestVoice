@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet, Alert, Image } from 'react-native';
+import { View, TextInput, Button, Text, StyleSheet, Alert, Image, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // Importación desde el nuevo paquete
 import { useNavigation } from '@react-navigation/native'; // Importar el hook useNavigation
 
@@ -50,7 +49,7 @@ const Preguntas = ({ onNext }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       {step === 1 && (
         <>
           <Text style={styles.labelBold}>Ingresa tu nombre</Text>
@@ -124,7 +123,7 @@ const Preguntas = ({ onNext }) => {
       )}
       {step === 5 && (
         <>
-         <View style={styles.imageContainer}>
+          <View style={styles.imageContainer}>
             <Image
               source={require('../imagenes/hard-work.png')}
               style={styles.logo}
@@ -170,7 +169,7 @@ const Preguntas = ({ onNext }) => {
       )}
       {step === 7 && (
         <>
-        <View style={styles.imageContainer}>
+          <View style={styles.imageContainer}>
             <Image
               source={require('../imagenes/goal.png')}
               style={styles.logo}
@@ -191,20 +190,21 @@ const Preguntas = ({ onNext }) => {
           <Button title="Enviar" onPress={() => navigation.navigate('VoiceRecognition')} />
         </>
       )}
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'center',
     padding: 16,
   },
   labelBold: {
-    fontSize: 18,
-    fontWeight: 'bold', // Negrita
+    fontSize: 20,
+    fontWeight: '600', // Esto debería funcionar para negrita
     marginBottom: 8,
+    color: '#000',
   },
   input: {
     borderWidth: 1,
@@ -213,21 +213,25 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderRadius: 4,
   },
-  picker: {
+  imageContainer: {
+    alignItems: 'center',
     marginBottom: 16,
   },
   logo: {
-    width: 300, 
-    height: 300, 
-  },
-  imageContainer: {
-    alignItems: 'center', // Centra la imagen horizontalmente
-    marginBottom: 16,
+    width: 300,
+    height: 300,
+    resizeMode: 'contain',
   },
   question: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
+    color: '#000',
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+    marginBottom: 16,
   },
 });
 
