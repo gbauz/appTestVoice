@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, Alert, Image, ScrollView } from 'react-native';
-import { Picker } from '@react-native-picker/picker'; // Importación desde el nuevo paquete
-import { useNavigation } from '@react-navigation/native'; // Importar el hook useNavigation
+import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
 
 const Preguntas = ({ onNext }) => {
-  const navigation = useNavigation(); // Usar el hook useNavigation para obtener la instancia de navegación
+  const navigation = useNavigation();
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
   const [step, setStep] = useState(1);
@@ -83,17 +83,17 @@ const Preguntas = ({ onNext }) => {
               style={styles.logo}
             />
           </View>
-          <Text style={styles.question}>¿Cómo te describirías en tres palabras?</Text>
+          <Text style={styles.question}>¿Cómo te describirías?</Text>
           <Picker
             selectedValue={answers.question1}
             onValueChange={(value) => handleAnswerChange('question1', value)}
             style={styles.picker}
           >
             <Picker.Item label="Seleccione una opción" value="" />
-            <Picker.Item label="Optimista, creativo, sociable" value="a" />
-            <Picker.Item label="Reservado, analítico, tranquilo" value="b" />
-            <Picker.Item label="Ambicioso, decidido, enfocado" value="c" />
-            <Picker.Item label="Empático, adaptable, cooperativo" value="d" />
+            <Picker.Item label="Optimista, creativo" value="a" />
+            <Picker.Item label="Reservado, analítico" value="b" />
+            <Picker.Item label="Ambicioso, enfocado" value="c" />
+            <Picker.Item label="Empático, adaptable" value="d" />
           </Picker>
           <Button title="Siguiente" onPress={handleNext} />
         </>
@@ -106,17 +106,17 @@ const Preguntas = ({ onNext }) => {
               style={styles.logo}
             />
           </View>
-          <Text style={styles.question}>¿Cómo sueles reaccionar ante situaciones de estrés?</Text>
+          <Text style={styles.question}>¿Cómo reaccionas al estrés?</Text>
           <Picker
             selectedValue={answers.question2}
             onValueChange={(value) => handleAnswerChange('question2', value)}
             style={styles.picker}
           >
             <Picker.Item label="Seleccione una opción" value="" />
-            <Picker.Item label="Mantengo la calma y busco soluciones." value="a" />
-            <Picker.Item label="Me siento ansioso/a pero intento manejarlo." value="b" />
-            <Picker.Item label="Evito pensar en el problema hasta que sea necesario." value="c" />
-            <Picker.Item label="Me estreso mucho y me cuesta concentrarme." value="d" />
+            <Picker.Item label="Mantengo la calma." value="a" />
+            <Picker.Item label="Me pongo ansioso." value="b" />
+            <Picker.Item label="Evito pensar." value="c" />
+            <Picker.Item label="Me estreso mucho." value="d" />
           </Picker>
           <Button title="Siguiente" onPress={handleNext} />
         </>
@@ -129,17 +129,17 @@ const Preguntas = ({ onNext }) => {
               style={styles.logo}
             />
           </View>
-          <Text style={styles.question}>¿Prefieres trabajar solo o en equipo?</Text>
+          <Text style={styles.question}>¿Trabajas solo o en equipo?</Text>
           <Picker
             selectedValue={answers.question3}
             onValueChange={(value) => handleAnswerChange('question3', value)}
             style={styles.picker}
           >
             <Picker.Item label="Seleccione una opción" value="" />
-            <Picker.Item label="Prefiero trabajar solo." value="a" />
-            <Picker.Item label="Me gusta trabajar en equipo, pero puedo hacerlo solo/a." value="b" />
-            <Picker.Item label="Prefiero trabajar en equipo." value="c" />
-            <Picker.Item label="Depende del proyecto y las circunstancias." value="d" />
+            <Picker.Item label="Solo." value="a" />
+            <Picker.Item label="Ambos." value="b" />
+            <Picker.Item label="Equipo." value="c" />
+            <Picker.Item label="Depende." value="d" />
           </Picker>
           <Button title="Siguiente" onPress={handleNext} />
         </>
@@ -152,17 +152,17 @@ const Preguntas = ({ onNext }) => {
               style={styles.logo}
             />
           </View>
-          <Text style={styles.question}>¿Cómo te sientes cuando tienes que tomar una decisión importante?</Text>
+          <Text style={styles.question}>¿Cómo tomas decisiones?</Text>
           <Picker
             selectedValue={answers.question4}
             onValueChange={(value) => handleAnswerChange('question4', value)}
             style={styles.picker}
           >
             <Picker.Item label="Seleccione una opción" value="" />
-            <Picker.Item label="Confío en mi intuición y tomo decisiones rápidas." value="a" />
-            <Picker.Item label="Prefiero analizar todas las opciones antes de decidir." value="b" />
-            <Picker.Item label="Me cuesta tomar decisiones y busco consejo." value="c" />
-            <Picker.Item label="Tomo decisiones pero suelo dudar después." value="d" />
+            <Picker.Item label="Intuitivamente." value="a" />
+            <Picker.Item label="Analizo todo." value="b" />
+            <Picker.Item label="Busco consejo." value="c" />
+            <Picker.Item label="Dudo mucho." value="d" />
           </Picker>
           <Button title="Siguiente" onPress={handleNext} />
         </>
@@ -172,20 +172,20 @@ const Preguntas = ({ onNext }) => {
           <View style={styles.imageContainer}>
             <Image
               source={require('../imagenes/goal.png')}
-              style={styles.logo}
+               style={styles.logo}
             />
           </View>
-          <Text style={styles.question}>¿Qué es lo más importante para ti en la vida?</Text>
+          <Text style={styles.question}>¿Qué es lo más importante?</Text>
           <Picker
             selectedValue={answers.question5}
             onValueChange={(value) => handleAnswerChange('question5', value)}
             style={styles.picker}
           >
             <Picker.Item label="Seleccione una opción" value="" />
-            <Picker.Item label="Lograr el éxito profesional." value="a" />
-            <Picker.Item label="Mantener relaciones personales sólidas." value="b" />
-            <Picker.Item label="Tener una vida equilibrada y tranquila." value="c" />
-            <Picker.Item label="Aprender y crecer constantemente." value="d" />
+            <Picker.Item label="Éxito profesional." value="a" />
+            <Picker.Item label="Relaciones." value="b" />
+            <Picker.Item label="Vida equilibrada." value="c" />
+            <Picker.Item label="Aprender y crecer." value="d" />
           </Picker>
           <Button title="Enviar" onPress={() => navigation.navigate('VoiceRecognition')} />
         </>
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
   },
   labelBold: {
     fontSize: 20,
-    fontWeight: '600', // Esto debería funcionar para negrita
+    fontWeight: '600',
     marginBottom: 8,
     color: '#000',
   },

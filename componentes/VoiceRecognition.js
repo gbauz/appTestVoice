@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Button, Alert, PermissionsAndroid, Platform, LogBox } from 'react-native';
+import { View, Alert, PermissionsAndroid, Image, Platform, LogBox, StyleSheet, Text, TouchableOpacity, Modal } from 'react-native';
 import Voice from '@react-native-voice/voice';
 
 // Ignorar las advertencias específicas de NativeEventEmitter
@@ -9,122 +9,294 @@ LogBox.ignoreLogs([
 ]);
 
 const personalityKeywords = {
-  ISTJ: [/metódico|metódica/, /minucioso|minuciosa/, /fiable/, /sistemático/, /concreto/, /ordenado/, /riguroso/, /puntual/],
-  ISFJ: [/atento/, /devoto/, /protector/, /generoso/, /conservador/, /amable/, /considerado/, /consciente/],
-  INFJ: [/idealista/, /altruista/, /profundo/, /enigmático/, /reflexivo/, /orientado a valores/, /sabio/, /perceptivo/],
-  INTJ: [/visionario/, /calculador/, /estratégico/, /analítico/, /decidido/, /ambicioso/, /innovador/, /estructurado/],
-  ISTP: [/ingenioso/, /pragmático/, /observador/, /adaptativo/, /resuelto/, /técnico/, /autónomo/, /práctico/],
-  ISFP: [/sensible/, /artístico/, /relajado/, /libre/, /adaptable/, /estético/, /apacible/, /intuitivo/],
-  INFP: [/soñador/, /introspectivo/, /idealista/, /empático/, /reflexivo/, /auténtico/],
-  INTP: [/analítico/, /inquisitivo/, /teórico/, /autónomo/, /crítico/, /mental/, /conceptual/, /independiente/],
-  ESTP: [/aventurero/, /audaz/, /pragmático/, /espontáneo/, /vivaz/, /directo/, /enérgico/, /entusiasta/],
-  ESFP: [/carismático/, /vibrante/, /sociable/, /adaptable/, /juguetón/, /alegre/, /entusiasta/, /expresivo/],
-  ENFP: [/inspirador/, /entusiasta/, /imaginativo/, /optimista/, /vivaz/, /espontáneo/, /comunicativo/, /creativo/],
-  ENTP: [/ingenioso/, /argumentativo/, /inquisitivo/, /explorador/, /adaptativo/, /provocador/, /estratégico/, /perspicaz/],
-  ESTJ: [/decisivo/, /pragmático/, /enfocado/, /responsable/, /metódico/, /directo/, /organizado/, /competente/],
-  ESFJ: [/empático/, /organizador/, /solidario/, /social/, /cooperativo/, /acogedor/, /tradicional/, /considerado/],
-  ENFJ: [/motivador/, /persuasivo/, /colaborador/, /inspirador/, /carismático/, /orientado a la gente/, /empático/, /guiador/],
-  ENTJ: [/decidido/, /ambicioso/, /directivo/, /estratégico/, /dominante/, /claro/, /metódico/, /eficiente/]
+  ISTJ: {
+    description: 'Los ISTJ son personas prácticas y organizadas que valoran la estructura y la fiabilidad. Tienden a ser metódicos y responsables en sus enfoques.',
+    keywords: [/metódico|metódica/, /minucioso|minuciosa/, /fiable/, /sistemático/, /concreto/, /ordenado/, /riguroso/, /puntual/],
+    advantages: ['Organizado', 'Confiable', 'Práctico'],
+    disadvantages: ['Rigidez', 'Dificultad para adaptarse al cambio'],
+    improvements: ['Ser más flexible', 'Apertura al cambio']
+  },
+  ISFJ: {
+    description: 'Los ISFJ son personas que valoran la lealtad y el apoyo a los demás, siendo atentos y serviciales. Se centran en ayudar a otros y proteger a quienes les rodean.',
+    keywords: [/atento/, /devoto/, /protector/, /generoso/, /conservador/, /amable/, /considerado/, /consciente/],
+    advantages: ['Empático', 'Leal', 'Servicial'],
+    disadvantages: ['Sobrecarga de trabajo', 'Dificultad para decir no'],
+    improvements: ['Establecer límites', 'Autocuidado']
+  },
+  INFJ: {
+    description: 'Los INFJ son idealistas profundos que buscan hacer una diferencia en el mundo. Tienen una visión clara y valoran la autenticidad y el crecimiento personal.',
+    keywords: [/idealista/, /altruista/, /profundo/, /enigmático/, /reflexivo/, /orientado a valores/, /sabio/, /perceptivo/],
+    advantages: ['Compasivo', 'Creativo', 'Determinado'],
+    disadvantages: ['Introversión', 'Perfeccionismo'],
+    improvements: ['Manejo del estrés', 'Delegar tareas']
+  },
+  INTJ: {
+    description: 'Los INTJ son estrategas visionarios que planifican con precisión y buscan mejorar sistemas y procesos. Son independientes y valoran la eficiencia y la lógica.',
+    keywords: [/visionario/, /calculador/, /estratégico/, /analítico/, /decidido/, /ambicioso/, /innovador/, /estructurado/],
+    advantages: ['Visionario', 'Decidido', 'Estratega'],
+    disadvantages: ['Frialdad emocional', 'Dificultad para relacionarse'],
+    improvements: ['Desarrollar empatía', 'Mejorar habilidades sociales']
+  },
+  ISTP: {
+    description: 'Los ISTP son solucionadores prácticos que se adaptan fácilmente a nuevas situaciones. Son ingeniosos y prefieren la acción sobre la teoría.',
+    keywords: [/ingenioso/, /pragmático/, /observador/, /adaptativo/, /resuelto/, /técnico/, /autónomo/, /práctico/],
+    advantages: ['Adaptable', 'Práctico', 'Independiente'],
+    disadvantages: ['Impulsividad', 'Evita compromisos'],
+    improvements: ['Gestionar impulsos', 'Desarrollar paciencia']
+  },
+  ISFP: {
+    description: 'Los ISFP valoran la autenticidad y la estética. Son personas sensibles y creativas que buscan vivir en el momento presente y disfrutar de la belleza.',
+    keywords: [/sensible/, /artístico/, /relajado/, /libre/, /adaptable/, /estético/, /apacible/, /intuitivo/],
+    advantages: ['Creativo', 'Flexible', 'Empático'],
+    disadvantages: ['Dificultad para planificar', 'Evita confrontaciones'],
+    improvements: ['Mejorar planificación', 'Afrontar conflictos']
+  },
+  INFP: {
+    description: 'Los INFP son soñadores idealistas que buscan vivir de acuerdo con sus valores más profundos. Son introspectivos y valoran la autenticidad en sí mismos y en los demás.',
+    keywords: [/soñador/, /introspectivo/, /idealista/, /empático/, /reflexivo/, /auténtico/],
+    advantages: ['Idealista', 'Empático', 'Creativo'],
+    disadvantages: ['Desorganización', 'Dificultad para tomar decisiones'],
+    improvements: ['Desarrollar habilidades organizativas', 'Tomar decisiones con confianza']
+  },
+  INTP: {
+    description: 'Los INTP son pensadores analíticos que disfrutan explorando conceptos y teorías. Son independientes y valoran la lógica y la innovación en sus procesos mentales.',
+    keywords: [/analítico/, /inquisitivo/, /teórico/, /autónomo/, /crítico/, /mental/, /conceptual/, /independiente/],
+    advantages: ['Lógico', 'Analítico', 'Innovador'],
+    disadvantages: ['Aislamiento social', 'Perfeccionismo'],
+    improvements: ['Mejorar habilidades sociales', 'Gestionar expectativas']
+  },
+  ESTP: {
+    description: 'Los ESTP son personas enérgicas y aventureras que disfrutan de la acción y la espontaneidad. Son prácticos y se enfrentan a los desafíos con entusiasmo.',
+    keywords: [/aventurero/, /audaz/, /pragmático/, /espontáneo/, /vivaz/, /directo/, /enérgico/, /entusiasta/],
+    advantages: ['Enérgico', 'Adaptable', 'Pragmático'],
+    disadvantages: ['Impulsividad', 'Dificultad para planificar a largo plazo'],
+    improvements: ['Desarrollar habilidades de planificación', 'Controlar impulsos']
+  },
+  ESFP: {
+    description: 'Los ESFP son extrovertidos y carismáticos, disfrutando de la interacción social y la diversión. Son espontáneos y les gusta vivir el presente.',
+    keywords: [/carismático/, /vibrante/, /sociable/, /adaptable/, /juguetón/, /alegre/, /entusiasta/, /expresivo/],
+    advantages: ['Carismático', 'Optimista', 'Sociable'],
+    disadvantages: ['Impulsividad', 'Dificultad para enfocarse'],
+    improvements: ['Desarrollar concentración', 'Planificar con anticipación']
+  },
+  ENFP: {
+    description: 'Los ENFP son imaginativos y entusiastas, con una visión inspiradora y una capacidad para conectar con los demás. Buscan experiencias nuevas y son muy comunicativos.',
+    keywords: [/inspirador/, /entusiasta/, /imaginativo/, /optimista/, /vivaz/, /espontáneo/, /comunicativo/, /creativo/],
+    advantages: ['Creativo', 'Inspirador', 'Optimista'],
+    disadvantages: ['Desorganización', 'Dificultad para mantener el enfoque'],
+    improvements: ['Desarrollar habilidades organizativas', 'Mantener el enfoque en objetivos']
+  },
+  ENTP: {
+    description: 'Los ENTP son innovadores y analíticos, disfrutando del debate y la exploración de nuevas ideas. Son adaptativos y persuasivos, con un enfoque estratégico.',
+    keywords: [/ingenioso/, /argumentativo/, /inquisitivo/, /explorador/, /adaptativo/, /provocador/, /estratégico/, /perspicaz/],
+    advantages: ['Innovador', 'Versátil', 'Persuasivo'],
+    disadvantages: ['Impulsividad', 'Dificultad para seguir rutinas'],
+    improvements: ['Desarrollar hábitos', 'Trabajar en la estabilidad']
+  },
+  ESTJ: {
+    description: 'Los ESTJ son líderes naturales que valoran la eficiencia y la organización. Son decisivos y responsables, con un enfoque pragmático en la toma de decisiones.',
+    keywords: [/decisivo/, /pragmático/, /enfocado/, /responsable/, /metódico/, /directo/, /organizado/, /competente/],
+    advantages: ['Organizado', 'Decisivo', 'Responsable'],
+    disadvantages: ['Rigidez', 'Dificultad para aceptar cambios'],
+    improvements: ['Ser más flexible', 'Abrirse a nuevas ideas']
+  },
+  ESFJ: {
+    description: 'Los ESFJ son amables y sociables, con un fuerte sentido del deber hacia los demás. Son organizadores naturales y buscan la armonía en sus relaciones.',
+    keywords: [/empático/, /organizador/, /solidario/, /social/, /cooperativo/, /acogedor/, /tradicional/, /considerado/],
+    advantages: ['Social', 'Solidario', 'Organizado'],
+    disadvantages: ['Sobrecarga de trabajo', 'Dificultad para establecer límites'],
+    improvements: ['Establecer límites claros', 'Delegar tareas']
+  },
+  ENFJ: {
+    description: 'Los ENFJ son líderes carismáticos que buscan inspirar a los demás y promover el bienestar colectivo. Son comprensivos y tienen un fuerte enfoque en los valores y las relaciones.',
+    keywords: [/carismático/, /inspirador/, /compasivo/, /organizador/, /dedicado/, /persuasivo/, /social/, /idealista/],
+    advantages: ['Inspirador', 'Compasivo', 'Líder'],
+    disadvantages: ['Sobrecarga emocional', 'Dificultad para delegar'],
+    improvements: ['Gestionar el estrés', 'Aprender a delegar']
+  },
+  INTJ: {
+    description: 'Los INTJ son estrategas visionarios que planifican con precisión y buscan mejorar sistemas y procesos. Son independientes y valoran la eficiencia y la lógica.',
+    keywords: [/visionario/, /calculador/, /estratégico/, /analítico/, /decidido/, /ambicioso/, /innovador/, /estructurado/],
+    advantages: ['Visionario', 'Decidido', 'Estratega'],
+    disadvantages: ['Frialdad emocional', 'Dificultad para relacionarse'],
+    improvements: ['Desarrollar empatía', 'Mejorar habilidades sociales']
+  }
 };
 
-const VoiceRecognition = ({ onTextRecognized = () => {} }) => {
-  const [isListening, setIsListening] = useState(false);
+const PersonalityComponent = () => {
+  const [listening, setListening] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [currentPersonality, setCurrentPersonality] = useState(null);
 
   useEffect(() => {
-    // Configurar los listeners de eventos
-    Voice.onSpeechStart = onSpeechStart;
-    Voice.onSpeechEnd = onSpeechEnd;
     Voice.onSpeechResults = onSpeechResults;
     Voice.onSpeechError = onSpeechError;
 
-    // Limpiar los listeners de eventos al desmontar el componente
     return () => {
-      Voice.destroy().then(() => Voice.removeAllListeners());
+      Voice.destroy().then(Voice.removeAllListeners);
     };
   }, []);
-
-  const onSpeechStart = () => {
-    setIsListening(true);
-    console.log('Reconocimiento de voz iniciado');
-  };
-
-  const onSpeechEnd = () => {
-    setIsListening(false);
-    console.log('Reconocimiento de voz terminado');
-  };
-
-  const onSpeechResults = (event) => {
-    console.log('Evento onSpeechResults:', event);
-    const { value } = event;
-    if (value && value.length > 0) {
-      const text = value[0].toLowerCase().replace(/\s+/g, ' ').trim(); // Normalizar texto
-      console.log('Texto Reconocido:', text); // Mostrar texto en consola
-      if (typeof onTextRecognized === 'function') {
-        onTextRecognized(text); // Llamar al callback prop
-      }
-
-      // Determinar el tipo de personalidad basado en las palabras clave
-      const detectedPersonalities = Object.keys(personalityKeywords).filter(personalityType => 
-        personalityKeywords[personalityType].some(pattern => pattern.test(text))
-      );
-
-      if (detectedPersonalities.length > 0) {
-        Alert.alert('Personalidad Detectada', `Tipo(s) de personalidad detectado(s): ${detectedPersonalities.join(', ')}`);
-      } else {
-        Alert.alert('No se detectó ningún tipo de personalidad');
-      }
-    }
-  };
-
-  const onSpeechError = (event) => {
-    console.log('Evento onSpeechError:', event);
-    const errorMessage = event?.error?.message || 'Error desconocido';
-    Alert.alert('Error', `Error de reconocimiento de voz: ${errorMessage}`);
-    setIsListening(false);
-  };
 
   const startListening = async () => {
     try {
       if (Platform.OS === 'android') {
-        const permission = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-          {
-            title: 'Permiso de Grabación de Audio',
-            message: 'Esta aplicación necesita acceso al micrófono para el reconocimiento de voz.',
-            buttonNeutral: 'Pregúntame después',
-            buttonNegative: 'Cancelar',
-            buttonPositive: 'Aceptar',
-          }
-        );
-        if (permission !== PermissionsAndroid.RESULTS.GRANTED) {
-          Alert.alert('Permiso de micrófono denegado');
-          return;
-        }
+        await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO);
       }
-      await Voice.start('es-ES'); // Idioma español
-    } catch (error) {
-      console.error(error);
-      Alert.alert('Error', 'No se pudo iniciar el reconocimiento de voz');
+      await Voice.start('es-ES');
+      setListening(true);
+    } catch (e) {
+      console.error(e);
     }
   };
 
   const stopListening = async () => {
     try {
       await Voice.stop();
-    } catch (error) {
-      console.error(error);
-      Alert.alert('Error', 'No se pudo detener el reconocimiento de voz');
+      setListening(false);
+    } catch (e) {
+      console.error(e);
     }
   };
 
+  const onSpeechResults = (e) => {
+    const spokenText = e.value[0];
+    console.log('Texto detectado:', spokenText); // Mostrar en consola
+
+    // Check if spoken text matches any personality keyword
+    for (const [type, { keywords }] of Object.entries(personalityKeywords)) {
+      if (keywords.some(keyword => keyword.test(spokenText))) {
+        setCurrentPersonality(type);
+        setModalVisible(true);
+        break;
+      }
+    }
+  };
+
+  const onSpeechError = (e) => {
+    console.error(e);
+    Alert.alert('Error', 'Error al procesar el discurso.');
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    setCurrentPersonality(null);
+  };
+
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Button
-        title={isListening ? 'Detener' : 'Iniciar'}
-        onPress={isListening ? stopListening : startListening}
+    <View style={styles.container}>
+      <Image
+        source={require('../imagenes/microphone.png')}
+        style={styles.image}
       />
+      <Text style={styles.text}>Presiona el botón para iniciar o detener la escucha:</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={listening ? stopListening : startListening}
+      >
+        <Text style={styles.buttonText}>{listening ? 'Detener escucha' : 'Iniciar escucha'}</Text>
+      </TouchableOpacity>
+
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={closeModal}
+      >
+        <View style={styles.modalContainer}>
+          {currentPersonality && (
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Tipo de Personalidad: {currentPersonality}</Text>
+              <Text style={styles.modalDescription}>{personalityKeywords[currentPersonality].description}</Text>
+              <Text style={styles.modalKeywords}>Palabras clave: {personalityKeywords[currentPersonality].keywords.map((keyword, index) => (
+                <Text key={index}>{keyword.source}</Text>
+              ))}</Text>
+              <Text style={styles.modalAdvantages}>Ventajas: {personalityKeywords[currentPersonality].advantages.join(', ')}</Text>
+              <Text style={styles.modalDisadvantages}>Desventajas: {personalityKeywords[currentPersonality].disadvantages.join(', ')}</Text>
+              <Text style={styles.modalImprovements}>Áreas de mejora: {personalityKeywords[currentPersonality].improvements.join(', ')}</Text>
+              <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+                <Text style={styles.closeButtonText}>Cerrar</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+      </Modal>
     </View>
   );
 };
 
-export default VoiceRecognition;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+  },
+  image: {
+    width: 200,
+    height: 200,
+    marginBottom: 20,
+  },
+  text: {
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: '#007bff',
+    padding: 10,
+    borderRadius: 5,
+    margin: 5,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  modalDescription: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  modalKeywords: {
+    fontSize: 14,
+    marginBottom: 10,
+  },
+  modalAdvantages: {
+    fontSize: 14,
+    marginBottom: 10,
+  },
+  modalDisadvantages: {
+    fontSize: 14,
+    marginBottom: 10,
+  },
+  modalImprovements: {
+    fontSize: 14,
+    marginBottom: 20,
+  },
+  closeButton: {
+    backgroundColor: '#dc3545',
+    padding: 10,
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+});
+
+export default PersonalityComponent;
