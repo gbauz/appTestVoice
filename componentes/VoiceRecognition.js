@@ -207,9 +207,7 @@ const PersonalityComponent = () => {
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>Tipo de Personalidad: {currentPersonality}</Text>
               <Text style={styles.modalDescription}>{personalityKeywords[currentPersonality].description}</Text>
-              <Text style={styles.modalKeywords}>Palabras clave: {personalityKeywords[currentPersonality].keywords.map((keyword, index) => (
-                <Text key={index}>{keyword.source}</Text>
-              ))}</Text>
+              
               <Text style={styles.modalAdvantages}>Ventajas: {personalityKeywords[currentPersonality].advantages.join(', ')}</Text>
               <Text style={styles.modalDisadvantages}>Desventajas: {personalityKeywords[currentPersonality].disadvantages.join(', ')}</Text>
               <Text style={styles.modalImprovements}>Áreas de mejora: {personalityKeywords[currentPersonality].improvements.join(', ')}</Text>
@@ -239,6 +237,8 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     marginBottom: 20,
+    fontFamily: 'Arial', // Puedes reemplazar 'Arial' con la fuente que prefieras
+    textAlign: 'center', // Alineación del texto en el centro
   },
   button: {
     backgroundColor: '#007bff',
@@ -249,6 +249,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 16,
+    fontFamily: 'Arial', // Asegura la consistencia en la fuente
   },
   modalContainer: {
     flex: 1,
@@ -267,26 +268,38 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+    fontFamily: 'Arial', // Fuente común para los títulos
+    textAlign: 'center', // Alineación del texto en el centro
   },
   modalDescription: {
     fontSize: 16,
     marginBottom: 10,
+    fontFamily: 'Arial', // Fuente común para el contenido
+    textAlign: 'center', // Alineación del texto en el centro
   },
   modalKeywords: {
     fontSize: 14,
     marginBottom: 10,
+    fontFamily: 'Arial', // Fuente común para el contenido
+    textAlign: 'center', // Alineación del texto en el centro
   },
   modalAdvantages: {
-    fontSize: 14,
+    fontSize: 16,
     marginBottom: 10,
+    fontFamily: 'Arial', // Fuente común para el contenido
+    textAlign: 'center', // Alineación del texto en el centro
   },
   modalDisadvantages: {
-    fontSize: 14,
+    fontSize: 16,
     marginBottom: 10,
+    fontFamily: 'Arial', // Fuente común para el contenido
+    textAlign: 'center', // Alineación del texto en el centro
   },
   modalImprovements: {
-    fontSize: 14,
+    fontSize: 16,
     marginBottom: 20,
+    fontFamily: 'Arial', // Fuente común para el contenido
+    textAlign: 'center', // Alineación del texto en el centro
   },
   closeButton: {
     backgroundColor: '#dc3545',
@@ -296,7 +309,9 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: '#fff',
     fontSize: 16,
+    fontFamily: 'Arial', // Fuente común para el botón
   },
 });
+
 
 export default PersonalityComponent;
