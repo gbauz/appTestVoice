@@ -137,11 +137,42 @@ const PersonalityComponent = () => {
     };
   }, []);
 
-  const startListening = async () => {
+  const requestMicrophonePermission = async () => {
     try {
       if (Platform.OS === 'android') {
-        await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO);
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+          {
+            title: 'Permiso para grabar audio',
+            message: 'Esta aplicación necesita acceso al micrófono para procesar la voz.',
+            buttonNeutral: 'Pregúntame luego',
+            buttonNegative: 'Cancelar',
+            buttonPositive: 'Aceptar',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('Permiso de micrófono concedido');
+          return true;
+        } else {
+          console.log('Permiso de micrófono denegado');
+          return false;
+        }
       }
+      return true;
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
+  };
+
+  const startListening = async () => {
+    const permissionGranted = await requestMicrophonePermission();
+    if (!permissionGranted) {
+      Alert.alert('Permiso denegado', 'No se puede iniciar la grabación sin el permiso de micrófono.');
+      return;
+    }
+
+    try {
       await Voice.start('es-ES');
       setListening(true);
     } catch (e) {
@@ -188,7 +219,7 @@ const PersonalityComponent = () => {
         source={require('../imagenes/microphone.png')}
         style={styles.image}
       />
-      <Text style={styles.text}>Presiona el botón para iniciar o detener la escucha:</Text>
+      <Text style={styles.text}>Presiona el botón para iniciar o detener la escuchas:</Text>
       <TouchableOpacity
         style={styles.button}
         onPress={listening ? stopListening : startListening}
@@ -272,7 +303,7 @@ const styles = StyleSheet.create({
     textAlign: 'center', // Alineación del texto en el centro
   },
   modalDescription: {
-    fontSize: 16,
+    fontSize: 16,    
     marginBottom: 10,
     fontFamily: 'Arial', // Fuente común para el contenido
     textAlign: 'center', // Alineación del texto en el centro
@@ -311,7 +342,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Arial', // Fuente común para el botón
   },
-});
 
+
+});
 
 export default PersonalityComponent;
