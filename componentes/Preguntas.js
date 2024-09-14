@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, Alert, Image, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+
+const adUnitId = __DEV__ ? TestIds.ADAPTIVE_BANNER : 'ca-app-pub-7076369033068846~4662673545';
 
 const Preguntas = ({ onNext }) => {
   const navigation = useNavigation();
@@ -172,7 +175,7 @@ const Preguntas = ({ onNext }) => {
           <View style={styles.imageContainer}>
             <Image
               source={require('../imagenes/goal.png')}
-               style={styles.logo}
+              style={styles.logo}
             />
           </View>
           <Text style={styles.question}>¿Qué es lo más importante?</Text>
@@ -190,6 +193,17 @@ const Preguntas = ({ onNext }) => {
           <Button title="Enviar" onPress={() => navigation.navigate('VoiceRecognition')} />
         </>
       )}
+      <View style={styles.adContainer}>
+        <BannerAd
+          unitId={adUnitId}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+          requestOptions={{
+            networkExtras: {
+              collapsible: 'bottom',
+            },
+          }}
+        />
+      </View>
     </ScrollView>
   );
 };
@@ -232,6 +246,10 @@ const styles = StyleSheet.create({
     height: 50,
     width: '100%',
     marginBottom: 16,
+  },
+  adContainer: {
+    alignItems: 'center',
+    marginVertical: 16,
   },
 });
 
