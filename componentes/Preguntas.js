@@ -4,7 +4,10 @@ import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 
-const adUnitId = __DEV__ ? TestIds.ADAPTIVE_BANNER : 'ca-app-pub-7076369033068846~4662673545';
+
+
+// Cambia el ID del anuncio a tu ID real para producción
+const adUnitId = __DEV__ ? TestIds.ADAPTIVE_BANNER : 'ca-app-pub-3940256099942544/9214589741';
 
 const Preguntas = ({ onNext }) => {
   const navigation = useNavigation();
@@ -86,6 +89,7 @@ const Preguntas = ({ onNext }) => {
               style={styles.logo}
             />
           </View>
+        
           <Text style={styles.question}>¿Cómo te describirías?</Text>
           <Picker
             selectedValue={answers.question1}
@@ -184,7 +188,7 @@ const Preguntas = ({ onNext }) => {
             onValueChange={(value) => handleAnswerChange('question5', value)}
             style={styles.picker}
           >
-            <Picker.Item label="Seleccione una opción" value="" />
+            <Picker.Item label="Seleccione una de las opciones" value="" />
             <Picker.Item label="Éxito profesional." value="a" />
             <Picker.Item label="Relaciones." value="b" />
             <Picker.Item label="Vida equilibrada." value="c" />

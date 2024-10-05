@@ -1,4 +1,4 @@
-package com.test
+package com.speakprofile
 
 import android.app.Application
 import com.facebook.react.PackageList

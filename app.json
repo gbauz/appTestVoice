@@ -1,6 +1,6 @@
 {
-  "name": "test",
-  "displayName": "test",
+  "name": "speak profile",
+  "displayName": "Speak profile",
 "react-native-google-mobile-ads": {
     "android_app_id": "ca-app-pub-7076369033068846~4662673545"
    

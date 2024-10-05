@@ -212,14 +212,16 @@ const PersonalityComponent = () => {
     setModalVisible(false);
     setCurrentPersonality(null);
   };
-
+  const BotonAlerta = () => {
+    Alert.alert('Instrucciones', 'Puedes utilizar algunas palabras claves en tu conversación que describan cualidades para poder ver tu tipo de personalidad por ejemplo:entusiasta,soñador,carismatico,etc.');
+  }
   return (
     <View style={styles.container}>
       <Image
         source={require('../imagenes/microphone.png')}
         style={styles.image}
       />
-      <Text style={styles.text}>Presiona el botón para iniciar o detener la escuchas:</Text>
+      <Text style={styles.text}>Presiona el botón para iniciar o detener la conversación:</Text>
       <TouchableOpacity
         style={styles.button}
         onPress={listening ? stopListening : startListening}
@@ -248,7 +250,17 @@ const PersonalityComponent = () => {
             </View>
           )}
         </View>
+      
       </Modal>
+
+      <TouchableOpacity
+        style={styles.floatingButton}  
+        onPress={BotonAlerta} // Llama a la función showAlert al presionar      
+      >
+        <Text style={[styles.buttonText, { fontSize: 25 ,fontWeight: 'bold'}]}>?</Text>
+      </TouchableOpacity>
+
+      
     </View>
   );
 };
@@ -342,7 +354,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Arial', // Fuente común para el botón
   },
-
+  floatingButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    width: 60,
+    height: 60,
+    backgroundColor: '#28a745',
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 8, // Sombra en Android
+    shadowColor: '#000', // Sombra en iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+  },
+  floatingButtonText: {
+    color: '#fff',
+    fontSize: 50,
+    fontWeight: 'bold',
+  },
 
 });
 
